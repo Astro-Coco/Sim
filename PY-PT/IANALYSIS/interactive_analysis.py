@@ -63,8 +63,8 @@ class Interactive_Analysis:
         for widget in self.root.winfo_children():
             widget.destroy()
 
-        button = tk.Button(self.root, text = 'Main Menu', command = self.main_menu)
-        self.place_widget(button,10,0)
+        button = tk.Button(self.root, text = 'Return to menu', command = self.main_menu)
+        self.place_widget(button,0,0,columnspan=5)
 
     def main_menu(self):
         # Create a menubar
@@ -532,8 +532,8 @@ class Interactive_Analysis:
             for key in self.selected_columns:
                 del self.datasets[key]
             
-            self.update_all()
             self.main_menu()
+            self.update_all()
 
         button = tk.Button(self.root, text = 'Drop datasets', command = drop_those)
         self.place_widget(button,10,10)
