@@ -1,0 +1,31 @@
+"""
+HEADER AND USED FUNCTIONS
+
+2023-10-29-17h16m48s
+
+#Used functions:
+@staticmethod
+def LCM101_LOADCELL(voltage) -> float:
+    voltage = voltage - 0.64
+    f_max = 3000 / 2.2 * g
+    excitation_voltage = 0.0030017  # Full scale output (mV/V)
+    res = 184
+    gain = 80000/res + 5
+    voltage_alimentation = 12
+
+    return (((voltage * f_max) / (voltage_alimentation * excitation_voltage)) / gain) + 450 # A correction of 450 was determined experimentally
+
+@staticmethod
+def PX309_OMEGA(voltage) -> float:
+    return voltage * 200
+    # return voltage * 200 / 0.0001450377
+
+@staticmethod
+def thermocouple_AD8495(voltage) -> float:
+    return (voltage - 1.25) / (0.005)
+
+@staticmethod
+def LC101_200(voltage) -> float:
+    return ((voltage * 66.335) - 26.53) * lb_to_kg * CustomUpdate.tank_factor"""
+
+
