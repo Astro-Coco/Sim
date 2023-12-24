@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import tkinter as tk
+from tkinter import ttk
+import customtkinter
 from PIL import ImageTk
 from PIL import Image
 import os
@@ -12,7 +14,7 @@ import parameters
 import optimisation
 import reduce_opti
 
-path_to_PYPT = 'c:/Users/Ordinateur/Desktop/Oronos/Sim/PY-PT'
+path_to_PYPT = r'c:\Users\colin\SIM_REPO\Sim\PY-PT'
 mot_name = 'mot_colin.py'
  
 csv_name = '29_OCT_MAIN_ANALYSIS.csv'
@@ -51,13 +53,14 @@ class Interactive_Analysis:
         self.datasets = {csv_file: self.main}
         self.all = self.main.data
 
-        self.root = tk.Tk()
-        self.root.geometry= '700x1200'
 
+        self.root = tk.Tk()
+        self.root.geometry('1300x700')
+        self.root.title('Analysis')
+        self.root.resizable(width = True,height = True)
 
         self.first = True
 
-        self.root.title("MAIN MENU")
         self.main_menu()
         self.root.mainloop()
 
@@ -65,40 +68,46 @@ class Interactive_Analysis:
         # Iterate over all children of the window and destroy them
         for widget in self.root.winfo_children():
             widget.destroy()
-            
-        button = tk.Button(self.root, text = 'Return to menu', command = self.main_menu)
-        self.place_widget(button,20,0)
+        if not self.menu:    
+            button = tk.Button(self.root, text = 'Return to menu', command = self.main_menu)
+            self.place_widget(button,20,0)
 
     def main_menu(self):
         # Create a menubar
+        self.style = ttk.Style()
+        self.style.configure("Large.TButton", font=("Arial", 12), padding=50)
+
+        # Clear existing widgets
+        self.menu = True
         self.clear_widgets()
-        menubar = tk.Menu(self.root)
-
-        # Create a menu
-        menu = tk.Menu(menubar, tearoff=0)
-
-        # Add menu items
-        menu.add_command(label="Resize Data", command=self.resize)
-        menu.add_command(label="Plot Data", command=self.interactive_plotting)
-        menu.add_command(label="Rename columns", command=self.rename)
-        menu.add_command(label="Drop columns", command=self.drop_columns)
-        menu.add_command(label='Drop datasets', command = self.drop_datasets)
-        menu.add_command(label="Perform moving average", command=self.moving_average)
-        menu.add_command(label="Perform integral", command=self.perform_integral)
-        menu.add_command(label="Perform derivative", command=self.perform_derivative)
-        menu.add_command(label="Perform fft", command=self.perform_fft)
-        menu.add_command(label="Add csv", command=self.add_csv)
-        menu.add_command(label="Run simulation", command=self.simulate)
-        menu.add_command(label="Optimize sim parameter", command=self.optimize)
-        menu.add_command(label="Save Data", command=self.save)
-
-        # Add the menu to the menubar
-        menubar.add_cascade(label="Menu", menu=menu)
-
-        self.img = ImageTk.PhotoImage(Image.open(os.path.join(path_to_PYPT,'IANALYSIS', "symbol_oronos.png")))
+        self.menu = False
+        self.img = ImageTk.PhotoImage(Image.open(os.path.join(path_to_PYPT, 'IANALYSIS', "symbol_oronos.png")))
         panel = tk.Label(self.root, image=self.img)
-        self.place_widget(panel,0,0)
-        self.root.config(menu=menubar)
+        panel.grid(row=0, column=0, columnspan=4, padx=20, pady=20)  # Add padding for aesthetics
+
+        # Add buttons
+        self.create_button("Plot Data", self.interactive_plotting, 1, 0, "Large.TButton")
+        self.create_button("Run simulation", self.simulate, 1, 1, "Large.TButton")
+        self.create_button("Rename columns", self.rename, 6, 0)
+        self.create_button("Resize Data", self.resize, 2, 0)
+        self.create_button("Drop columns", self.drop_columns, 3, 0)
+        self.create_button("Drop datasets", self.drop_datasets, 4, 0)
+        self.create_button("Add csv", self.add_csv, 5, 0)
+        self.create_button("Perform moving average", self.moving_average, 4, 1)
+        self.create_button("Perform integral", self.perform_integral, 5, 1)
+        self.create_button("Perform derivative", self.perform_derivative, 6, 1)
+        self.create_button("Perform fft", self.perform_fft, 3, 1)
+        self.create_button("Optimize sim parameter", self.optimize, 2, 1)
+        self.create_button("Save Data", self.save, 7, 0, columnspan=2)
+
+
+    def create_button(self, text, command, row, column, style=None, columnspan=1):
+        if style:
+            button = ttk.Button(text=text, command=command, style=style)
+        else:
+            button = ttk.Button(text=text, command=command)
+        button.grid(row=row, column=column, columnspan=columnspan, padx=10, pady=10, sticky="nsew")
+
 
 
     def place_widget(self, widget, row, column, rowspan=1, columnspan=1):
