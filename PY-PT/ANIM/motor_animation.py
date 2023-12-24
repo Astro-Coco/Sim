@@ -197,10 +197,10 @@ class motor_animation:
         # round 1/dt in case odd choice
 
         size = round(1 / dt) // fps
-        if (self.t // dt) % size == 0:
+        size = 1 if size == 0 else size
+        if round((self.t / dt)) % size == 0:
             self.anim[0].canvas.flush_events()
             self.anim[0].canvas.draw_idle()
-            #self.anim[0].savefig(f"ANIMATION/plot_{self.t}.png")
 
             update_grain(self, r)
             update_ox(self, ox_mass)
