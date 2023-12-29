@@ -419,6 +419,7 @@ class hybrid_motor:
             print("Burn time : " + "{:.3f}".format(time) + " s")
 
     def save_data_to_csv(self, filename):
+        filename = filename.split('\\')[-1]
         filename = filename.split(".")[0]
         dataframe_to_save = pd.DataFrame(self.data)
         try:

@@ -13,6 +13,7 @@ import subprocess
 import parameters
 import optimisation
 import reduce_opti
+import gradient_descent
 
 path_to_PYPT = r'c:\Users\colin\SIM_REPO\Sim\PY-PT'
 mot_name = 'mot_colin.py'
@@ -98,7 +99,9 @@ class Interactive_Analysis:
         self.create_button("Perform derivative", self.perform_derivative, 6, 1)
         self.create_button("Perform fft", self.perform_fft, 3, 1)
         self.create_button("Optimize sim parameter", self.optimize, 2, 1)
-        self.create_button("Save Data", self.save, 7, 0, columnspan=2)
+        self.create_button("Gradient descent", self.gradient_opti, 7,1)
+        self.create_button('Produce reference thrust', self.produce_ref_data, 7, 0)
+        self.create_button("Save Data", self.save, 8, 0, columnspan=2)
 
 
     def create_button(self, text, command, row, column, style=None, columnspan=1):
@@ -757,20 +760,57 @@ class Interactive_Analysis:
         button = tk.Button(self.root, text = 'Modify choosen config', command = modify_config)
         self.place_widget(button,10,10)
 
+    def produce_ref_data(self):
+        self.clear_widgets()
+
+        label = tk.Label(self.root, text= 'Choose reference thrust data to prepare gradient descent\nThe data should be trimmed to high thrust, steady state phase')
+        self.place_widget(label,20,0)
+        self.select_columns()
+        def choose_thrust():
+            self.finalize_selection()
+            column = self.selected_columns[0]
+            print(column)
+            saving = os.path.join(path_to_PYPT, 'IANALYSIS', 'descent', 'ref.csv')
+            
+            all = self.all[[self.time_and_df_from_col(column)['dataset'].time, column]].rename(columns = {self.time_and_df_from_col(column)['dataset'].time: 'time', column : 'ref_thrust'})
+            all.to_csv(saving)
+            self.main_menu()
+
+        choose_thrust = tk.Button(self.root, text = 'Confirm choice', command = choose_thrust)
+        self.place_widget(choose_thrust,15,1)
+
+
+    def gradient_opti(self):
+        self.clear_widgets()
+        mot_folder = os.path.join(path_to_PYPT, 'MOT')
+        files_in_mot = os.listdir(mot_folder)
+
+        jsons = [file for file in files_in_mot if file.endswith('.json')]
+
+        self.select_columns(liste = jsons)
+
+        def choosen_config():
+            self.finalize_selection(liste = jsons)
+            path = os.path.join(mot_folder,self.selected_columns[0])
+
+            gradient_descent.gradient_descent(path_to_PYPT).main(path)
+
+        chose_config = tk.Button(self.root, text = 'Choose config', command = choosen_config)
+        self.place_widget(chose_config, 10,0)
 
     def save(self):
+        self.clear_widgets()
         def save_csv():
             self.all.reset_index(drop=True, inplace=True)
             self.all.to_csv(os.path.join(path_to_PYPT,'IANALYSIS','sauvegardes_csv',(entry.get() + ".csv")))
             self.main_menu()
-            
-        self.clear_widgets()
+
         label = tk.Label(self.root, text="Enter the saved name you want (no .csv needed)")
-        label.pack()
+        self.place_widget(label, 1,1)
         entry = tk.Entry(self.root)
-        entry.pack()
+        self.place_widget(entry,1,2)
         B = tk.Button(self.root, text="Confirm", command=save_csv)
-        B.pack()
+        self.place_widget(B,1,3)
 
 if __name__ == "__main__":
     Interactive_Analysis(csv_file=csv_name, sep=separator, time=indepedent_variable_name)
