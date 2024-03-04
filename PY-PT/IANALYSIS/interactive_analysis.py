@@ -15,19 +15,20 @@ import optimisation
 import reduce_opti
 import gradient_descent
 
-path_to_PYPT = r'c:\Users\colin\SIM_REPO\Sim\PY-PT'
+path_to_PYPT = r'C:\Users\Ordinateur\Desktop\Oronos\Sim\PY-PT'
 mot_name = 'mot_colin.py'
  
-csv_name = '29_OCT_MAIN_ANALYSIS.csv'
+csv_name = 'cleaned_data_02_mars_2024.csv'
 separator = ","
 indepedent_variable_name = "time"
 
 
 class dataset:
     def __init__(self, csv_file, separator, indepedent_variable_name):
-        file = os.path.join(path_to_PYPT, 'IANALYSIS','sauvegardes_csv', csv_file)
+        file = os.path.join(path_to_PYPT, 'IANALYSIS', 'sauvegardes_csv', csv_file)
         try:
             self.data = pd.read_csv(file, sep=separator)
+            print(self.data['time'])
         except:
             file = os.path.join(path_to_PYPT,'MOT', csv_file)
             self.data = pd.read_csv(file, sep=separator)
@@ -437,25 +438,31 @@ class Interactive_Analysis:
             plt.cla()
             self.finalize_selection()
             value = self.selected_columns[0]
+            print('column chose : ' ,value)
             both = self.time_and_df_from_col(value)
             t, dataset = both["time"], both["dataset"]
-            
+            print('time : ', t)
+
             value_str = value
             value = dataset.data[value].dropna()
             y = value - value.mean()
+            print('y : ', y)
+ 
             fft_values = np.fft.fft(y)
-            
-            
-
-            frequencies = np.fft.fftfreq(len(y), d=np.mean(np.diff(t)))
-            
+            print('fft_values', fft_values)
+        
+            frequencies = np.fft.fftfreq(len(y), d=np.mean(np.diff(t[:len(y)])))
+            print('len_y : ', len(y))
+            print('freqs from fft : ' , frequencies)
 
             amplitudes = np.abs(fft_values)
+            print(amplitudes)
             positive_freq_idxs = np.where(frequencies > 0)
             
             frequencies = frequencies[positive_freq_idxs]
-            
+            print('freqs1  : ' , amplitudes)
             amplitudes = amplitudes[positive_freq_idxs]
+            print('amps1  : ' , amplitudes)
             
 
             plt.plot(frequencies, amplitudes, linewidth=1)
@@ -465,9 +472,11 @@ class Interactive_Analysis:
             if ylim != None:
                 plt.ylim(0, ylim)
             else:
-                amp = amplitudes[frequencies > 25]
+                #amp = amplitudes[frequencies > 25]
+                pass
                 try:
-                    plt.ylim(0, max(amp) * 1.1)
+                   # plt.ylim(0, max(amp) * 1.1)
+                    pass
                 except:
                     print("No amplitude detected, please try with another column")
             if minxlim != None:
@@ -475,7 +484,9 @@ class Interactive_Analysis:
             plt.show()
 
             amps = amplitudes[frequencies > 25]
+            print(f'amplitudes : ', amps)
             freqs = frequencies[frequencies > 25]
+            print(f'frequencies : ', freqs)
             print(f"max resonnance : {freqs[amps == max(amps)][0]}")
 
             self.main_menu()
@@ -588,19 +599,19 @@ class Interactive_Analysis:
     def add_csv(self):
         self.clear_widgets()
         label = tk.Label(self.root, text="CSV NAME : ")
-        label.pack()
+        self.place_widget(label,10,9)
         csv_name = tk.Entry(self.root)
-        csv_name.pack()
+        self.place_widget(csv_name,10,10)
 
         label = tk.Label(self.root, text="Separator")
-        label.pack()
+        self.place_widget(label,10,11)
         separator = tk.Entry(self.root)
-        separator.pack()
+        self.place_widget(separator,10,12)
 
         label = tk.Label(self.root, text="Independent variable name")
-        label.pack()
+        self.place_widget(label,10,13)
         indepedent_name = tk.Entry(self.root)
-        indepedent_name.pack()
+        self.place_widget(indepedent_name,10,14)
 
         def get_entries():
             name = csv_name.get()
@@ -615,7 +626,7 @@ class Interactive_Analysis:
             self.main_menu()
 
         button = tk.Button(self.root, text="Confirm Entries", command=get_entries)
-        button.pack()
+        self.place_widget(button,9,10)
 
     def simulate(self):
         self.clear_widgets()
@@ -632,8 +643,11 @@ class Interactive_Analysis:
         def run_sim(config, mot = mot_name):
 
             os.chdir(os.path.join(path_to_PYPT, 'MOT'))
+            print('Config passed : '  , config)
+            print('mot name ', mot)
             result = subprocess.run(['python', mot, '-f', config],
                         capture_output=True, text=True)
+            print('OUTPUT : ' , result.stdout, ' : OVER')
             os.chdir(current_directory)
 
             file_times = [(file, os.path.getmtime(os.path.join(mot_folder, file))) for file in files_in_mot if os.path.isfile(os.path.join(mot_folder, file))]
@@ -647,7 +661,7 @@ class Interactive_Analysis:
                     del self.datasets[name]
                     self.update_all()
                     break
-
+            print('csv name' , newest_file[0])
             new_csv = dataset(newest_file[0], ',' , 'Time      (s)')
             self.datasets[newest_file[0]] = new_csv
             self.update_all()
@@ -658,7 +672,7 @@ class Interactive_Analysis:
         def choose_json():
             self.finalize_selection(jsons)
             selected = self.selected_columns[0]
-            
+            print('config selected ', selected)
             run_sim_button = tk.Button(self.root, text = 'Run Sim with Choosen config', command = lambda : run_sim(selected))
             self.place_widget(run_sim_button,9,4)
         
