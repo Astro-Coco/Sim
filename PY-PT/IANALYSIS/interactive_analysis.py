@@ -17,8 +17,8 @@ import gradient_descent
 
 path_to_PYPT = r'C:\Users\Ordinateur\Desktop\Oronos\Sim\PY-PT'
 mot_name = 'mot_colin.py'
- 
-csv_name = 'cleaned_data_02_mars_2024.csv'
+
+csv_name = 'mars2.csv'
 separator = ","
 indepedent_variable_name = "time"
 
@@ -309,8 +309,6 @@ class Interactive_Analysis:
         self.finalize_selection()
         plt.clf()
 
-        
-        
         for col in self.selected_columns:
             print(self.time_and_df_from_col(col)["time"])
             plt.scatter(
