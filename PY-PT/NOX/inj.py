@@ -146,6 +146,7 @@ def inject(Pin, xin, Pout = 0):
     a2 = ky/kx
     a1 = (Gsave[1]-Gsave[0]-a2*(Psave[1]**2-Psave[0]**2))/(Psave[1]-Psave[0])
     a0 = Gsave[0] - a1*Psave[0] - a2*Psave[0]**2
+    #print('a2 : ', a2)
     P = - a1/(2*a2) # Best fit
     G = a0 + a1*P + a2*P**2
 
