@@ -1,6 +1,6 @@
 import sys
 
-local_py_pt = r'C:\Users\Ordinateur\Desktop\Oronos\Sim\PY-PT'
+local_py_pt = r'C:\Users\colin\OneDrive\Desktop\Save\Python Code\Sim\PY-PT'
 
 
 paths = ["", "\\", "\\CEA", "\\MOT", "\\NOX", "\\ANIM",'\\DATA']

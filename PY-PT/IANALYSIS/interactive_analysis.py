@@ -15,7 +15,7 @@ import optimisation
 import reduce_opti
 import gradient_descent
 
-path_to_PYPT = r'C:\Users\Ordinateur\Desktop\Oronos\Sim\PY-PT'
+path_to_PYPT = r'C:\Users\colin\OneDrive\Desktop\Save\Python Code\Sim\PY-PT'
 mot_name = 'mot_colin.py'
 
 csv_name = 'mars2.csv'
