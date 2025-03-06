@@ -8,7 +8,7 @@ import os
 import math
 import subprocess
 
-#relative to mot file
+#relative to mot file, or could be in Anlayse_interactive
 path_to_csv = "c:\\Users\\colin\\OneDrive\\Desktop\\Save\\Python Code\\Sim\\Analyse_interactive\\OX_W_ANALYSIS.csv"
 separator = ","
 indepedent_variable_name = "time"
