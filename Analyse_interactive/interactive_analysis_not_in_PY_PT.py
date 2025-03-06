@@ -8,17 +8,23 @@ import os
 import math
 import subprocess
 
-path_to_csv = "data-output-2023-10-29-17h16m48s.csv"
-separator = ";"
+#relative to mot file
+path_to_csv = "c:\\Users\\colin\\OneDrive\\Desktop\\Save\\Python Code\\Sim\\Analyse_interactive\\OX_W_ANALYSIS.csv"
+separator = ","
 indepedent_variable_name = "time"
 
 
 class dataset:
     def __init__(self, csv_file, separator, indepedent_variable_name):
         current_directory = os.getcwd()
+        print(f"Current directoy : {current_directory}")
         upper_directory = os.path.dirname(current_directory)
+        print(f"Upper directoy : {upper_directory}")
         mot_folder = upper_directory+'\\PY-PT'+'\\MOT'
-        self.data = pd.read_csv(mot_folder +'\\' + csv_file, sep=separator)
+        try:
+            self.data = pd.read_csv(mot_folder +'\\' + csv_file, sep=separator)
+        except:
+            self.data = pd.read_csv(csv_file)
         self.datacopy = self.data
         self.df = self.data
         self.time = indepedent_variable_name
@@ -74,6 +80,8 @@ class Interactive_Analysis:
 
         # Add the menu to the menubar
         menubar.add_cascade(label="Menu", menu=menu)
+
+        
 
         self.img = ImageTk.PhotoImage(Image.open("symbol_oronos.png"))
         panel = tk.Label(self.root, image=self.img)
